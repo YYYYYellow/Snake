@@ -1,8 +1,10 @@
 import java.awt.Color;
+
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 public class Yards extends Frame {
 
@@ -11,16 +13,23 @@ public class Yards extends Frame {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	// 列
-	public static int rows = 50;
+	// 装蛇的节点容器
+	static ArrayList<Snakes.Node> tailList = new ArrayList<Snakes.Node>();
+	// static ArrayList<Snakes.Node> headList = new ArrayList<Snakes.Node>();
+
 	// 行
+	public static int rows = 50;
+	// 列
 	public static int crows = 50;
 	// 行列的间距
 	public static int Bolck_Size = 10;
 
+	static Snakes snakes = null;
+
 	public static void main(String[] args) {
 		// 创建一个yards
 		new Yards().lauch();
+		snakes = new Snakes(tailList);
 	}
 
 	public void lauch() {
@@ -49,6 +58,8 @@ public class Yards extends Frame {
 		for (int i = 1; i <= crows; i++) {
 			g.drawLine(0, i * Bolck_Size, rows * Bolck_Size, i * Bolck_Size);
 		}
+
+		snakes.draw(g);
 
 	}
 
