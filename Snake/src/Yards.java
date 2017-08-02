@@ -16,25 +16,25 @@ public class Yards extends Frame {
 	private static final long serialVersionUID = 1L;
 
 	// 装蛇的节点容器
-	static ArrayList<Snakes.Node> tailList = new ArrayList<Snakes.Node>();
-	// static ArrayList<Snakes.Node> headList = new ArrayList<Snakes.Node>();
+//	static ArrayList<Snakes.Node> tailList = new ArrayList<Snakes.Node>();
 
 	// 行
 	public static int rows = 50;
 	// 列
-	public static int crows = 50;
+	public static int cols = 50;
 	// 行列的间距
 	public static int Bolck_Size = 10;
 
-	static Snakes snakes = null;
-
+	static Snakes snakes;
+	Eggs eggs = new Eggs();
 	Image offScreenImage = null;
 
 	public static void main(String[] args) {
 		// 创建一个yards
 
 		new Yards().lauch();
-		snakes = new Snakes(tailList);
+//		snakes = new Snakes(tailList);
+		snakes = new Snakes();
 
 		// 调用刷新线程
 
@@ -43,10 +43,9 @@ public class Yards extends Frame {
 	}
 
 	public void lauch() {
-		setBounds(0, 0, rows * Bolck_Size, crows * Bolck_Size);
+		setBounds(0, 0, rows * Bolck_Size, cols * Bolck_Size);
 		setBackground(Color.gray);
 		setVisible(true);
-
 		new Thread(new RepaintRunnable()).start();
 
 		addKeyListener(new KeyMonitor());
@@ -65,40 +64,17 @@ public class Yards extends Frame {
 		g.setColor(Color.darkGray);
 		// 画竖线
 		for (int i = 1; i <= rows; i++) {
-			g.drawLine(i * Bolck_Size, 0, i * Bolck_Size, crows * Bolck_Size);
+			g.drawLine(i * Bolck_Size, 0, i * Bolck_Size, cols * Bolck_Size);
 		}
 		// 画横线
-		for (int i = 1; i <= crows; i++) {
+		for (int i = 1; i <= cols; i++) {
 			g.drawLine(0, i * Bolck_Size, rows * Bolck_Size, i * Bolck_Size);
 		}
-
+		snakes.eat(eggs);
+		eggs.draw(g);
 		snakes.draw(g);
-		// System.out.println("+++++++");
+
 	}
-
-	// @Override
-	// public void run() {
-	// while (true) {
-	// System.out.println("--------");
-	// repaint();
-	// try {
-	// Thread.sleep(50);
-	// } catch (InterruptedException e) {
-	// e.printStackTrace();
-	// }
-	// }
-	//
-	// }
-
-	// @Override
-	// public void update(Graphics g) {
-	// if (offScreenImage == null) {
-	// offScreenImage = this.createImage(rows * Bolck_Size, crows * Bolck_Size);
-	// }
-	// Graphics goff = offScreenImage.getGraphics();
-	// paint(g);
-	// g.drawImage(offScreenImage, 0, 0, null);
-	// }
 
 	private class RepaintRunnable implements Runnable {
 
@@ -108,7 +84,7 @@ public class Yards extends Frame {
 				repaint();
 				// System.out.println("--------");
 				try {
-					Thread.sleep(50);
+					Thread.sleep(100);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

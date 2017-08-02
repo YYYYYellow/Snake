@@ -1,31 +1,36 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Snakes {
 
-	// public static int row;
-	// public static int crow;
-	// public static int Bolck_Size;
-
+	int rows;
+	int cols;
+	int w = Yards.Bolck_Size;
+	int h = Yards.Bolck_Size;
 	// 保存头方向
 	Dir dir = null;
 	// 保存第1节点方向
 	Dir nDir = null;
 	// 装蛇的节点容器
 
-	ArrayList<Node> tailList = null;
-	ArrayList<Node> headList = null;
+	static ArrayList<Node> tailList = new ArrayList<Node>();
+	// ArrayList<Node> headList = null;
 	// 初始化第2个节点
-	Node node = new Node((Yards.rows / 2) * Yards.Bolck_Size, (Yards.crows / 2) * Yards.Bolck_Size, Dir.L);
+	Node node = new Node(Yards.rows / 2, Yards.cols / 2, Dir.L);
 
-	public Snakes(ArrayList<Node> tailL) {
-
-		this.tailList = tailL;
+	public Snakes() {
 		tailList.add(node);
 	}
+
+//	public Snakes(ArrayList<Node> tailL) {
+//
+//		this.tailList = tailL;
+//		tailList.add(node);
+//	}
 
 	// 蛇的节点
 	class Node {
@@ -36,10 +41,20 @@ public class Snakes {
 		// 节点方向
 		Dir dir;
 
+		int w = Yards.Bolck_Size;
+		int h = Yards.Bolck_Size;
+
 		public Node(int x, int y, Dir dir) {
 			this.rows = x;
 			this.crows = y;
 			this.dir = dir;
+		}
+
+		public void draw(Graphics g) {
+			Color c = g.getColor();
+			g.setColor(Color.red);
+			g.fillRect(node.rows * w, node.crows * h, Yards.Bolck_Size, Yards.Bolck_Size);
+			g.setColor(c);
 		}
 
 	}
@@ -47,7 +62,11 @@ public class Snakes {
 	// 尾部增加节点
 	public void addToTail() {
 
-		Node tail = tailList.get(tailList.size() - 1);
+		// Node tail = this.tailList.get(tailList.size()-1);
+		int s = tailList.size();
+		s -= s;
+		System.out.println("s的值-----：" + s);
+		Node tail = tailList.get(s);
 		switch (tail.dir) {
 		case L:
 			tailList.add(new Node(tail.rows, tail.crows + 1, tail.dir));
@@ -87,28 +106,19 @@ public class Snakes {
 
 	// 画蛇
 	public void draw(Graphics g) {
-		Color c = g.getColor();
-		g.setColor(Color.red);
-
-		// 先移动
-		move();
 		Iterator<Node> it = tailList.iterator();
-		// 在绘制
 		while (it.hasNext()) {
 			Node node = (Node) it.next();
-
-			g.fillRect(node.rows, node.crows, Yards.Bolck_Size, Yards.Bolck_Size);
-			// System.out.println("???????");
+			node.draw(g);
 		}
-		// 蛇的移动
-		// move();
-		g.setColor(c);
+		move();
 
 	}
 
 	// ****
 	private void move() {
 
+//		addToTail();
 		// 赋值一个ArrayList
 		ArrayList<Node> tailClone = (ArrayList<Node>) tailList.clone();
 
@@ -157,6 +167,25 @@ public class Snakes {
 
 	}
 
+	//
+	public void eat(Eggs e) {
+
+		if (this.getRec().intersects(e.getRec())) {
+			System.out.println("碰到了碰到了碰到了碰到了碰到了");
+			e.occur();
+			addToTail();
+		}
+
+	}
+
+	// 碰撞计算
+	public Rectangle getRec() {
+		Node head = tailList.get(0);
+
+		return new Rectangle(head.rows * w, head.crows * h, head.w, head.h);
+	}
+
+	// 键盘
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
 		switch (key) {
