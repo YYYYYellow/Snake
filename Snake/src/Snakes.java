@@ -45,8 +45,9 @@ public class Snakes {
 	}
 
 	// 尾部增加节点
-	public void addToTail(Node tail) {
+	public void addToTail() {
 
+		Node tail = tailList.get(tailList.size() - 1);
 		switch (tail.dir) {
 		case L:
 			tailList.add(new Node(tail.rows, tail.crows + 1, tail.dir));
@@ -105,8 +106,7 @@ public class Snakes {
 
 	}
 
-	
-	//****
+	// ****
 	private void move() {
 
 		// 赋值一个ArrayList
@@ -137,9 +137,9 @@ public class Snakes {
 		}
 
 		Node nodeS = tailList.get(1);
-		//保存第2个节点方向
+		// 保存第2个节点方向
 		nDir = nodeS.dir;
-		//将头结点方向赋予第二节点
+		// 将头结点方向赋予第二节点
 		nodeS.dir = dir;
 
 		if (Size == 2) {
@@ -147,15 +147,14 @@ public class Snakes {
 		}
 
 		Node nodeSS = tailList.get(2);
-		//将第二节点方向赋予第三节点
+		// 将第二节点方向赋予第三节点
 		nodeSS.dir = nDir;
-		
-		//从第四节点开始，通过克隆的节点 将前一节点方向赋给现节点
+
+		// 从第四节点开始，通过克隆的节点 将前一节点方向赋给现节点
 		for (int i = 3; i < Size; i++) {
 			tailList.get(3).dir = tailClone.get(i - 1).dir;
 		}
-		
-		
+
 	}
 
 	public void keyPressed(KeyEvent e) {
