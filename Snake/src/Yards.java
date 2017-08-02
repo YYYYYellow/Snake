@@ -1,7 +1,9 @@
 import java.awt.Color;
-
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -26,10 +28,18 @@ public class Yards extends Frame {
 
 	static Snakes snakes = null;
 
+	Image offScreenImage = null;
+
 	public static void main(String[] args) {
 		// 创建一个yards
+
 		new Yards().lauch();
 		snakes = new Snakes(tailList);
+
+		// 调用刷新线程
+
+		// Thread thread = new Thread(yards);
+		// thread.start();
 	}
 
 	public void lauch() {
@@ -37,6 +47,9 @@ public class Yards extends Frame {
 		setBackground(Color.gray);
 		setVisible(true);
 
+		new Thread(new RepaintRunnable()).start();
+
+		addKeyListener(new KeyMonitor());
 		// 关闭键监听
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -60,6 +73,58 @@ public class Yards extends Frame {
 		}
 
 		snakes.draw(g);
+		// System.out.println("+++++++");
+	}
+
+	// @Override
+	// public void run() {
+	// while (true) {
+	// System.out.println("--------");
+	// repaint();
+	// try {
+	// Thread.sleep(50);
+	// } catch (InterruptedException e) {
+	// e.printStackTrace();
+	// }
+	// }
+	//
+	// }
+
+	// @Override
+	// public void update(Graphics g) {
+	// if (offScreenImage == null) {
+	// offScreenImage = this.createImage(rows * Bolck_Size, crows * Bolck_Size);
+	// }
+	// Graphics goff = offScreenImage.getGraphics();
+	// paint(g);
+	// g.drawImage(offScreenImage, 0, 0, null);
+	// }
+
+	private class RepaintRunnable implements Runnable {
+
+		@Override
+		public void run() {
+			while (true) {
+				repaint();
+				// System.out.println("--------");
+				try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+
+		}
+
+	}
+
+	private class KeyMonitor extends KeyAdapter {
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+
+			snakes.keyPressed(e);
+		}
 
 	}
 
