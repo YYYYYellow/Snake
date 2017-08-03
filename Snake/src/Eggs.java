@@ -13,7 +13,7 @@ public class Eggs {
 	Color color = Color.black;
 
 	public Eggs() {
-		this(r.nextInt(10)+5, r.nextInt(10)+5);
+		this(r.nextInt(10) + 5, r.nextInt(10) + 5);
 	}
 
 	public Eggs(int rows, int crows) {
@@ -39,10 +39,8 @@ public class Eggs {
 
 	// 重写设置鸡蛋出现的位置
 	public void occur() {
-		this.setCrows(r.nextInt(35)+5);
-		this.setRows(r.nextInt(35)+5);
-		System.out.println("rows:" + this.rows);
-		System.out.println("cols:" + this.cols);
+		this.setCrows(r.nextInt(35) + 5);
+		this.setRows(r.nextInt(35) + 5);
 	}
 
 	public int getRows() {

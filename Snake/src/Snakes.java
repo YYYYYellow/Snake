@@ -7,56 +7,55 @@ import java.util.Iterator;
 
 public class Snakes {
 
+	// 头结点，尾节点，大小
+	private Node head = null;
+	private Node tail = null;
+	private int size = 0;
+
 	int rows;
 	int cols;
 	int w = Yards.Bolck_Size;
 	int h = Yards.Bolck_Size;
-	// 保存头方向
-	Dir dir = null;
-	// 保存第1节点方向
-	Dir nDir = null;
 	// 装蛇的节点容器
 
 	private Yards y;
-	static ArrayList<Node> tailList = new ArrayList<Node>();
-	// ArrayList<Node> headList = null;
 	// 初始化第2个节点
 	Node node = new Node(Yards.rows / 2, Yards.cols / 2, Dir.L);
 
 	public Snakes(Yards y) {
-		tailList.add(node);
 		this.y = y;
+		//
+		this.head = node;
+		this.tail = node;
+		tail.next = null;
+		this.size = 1;
 	}
-
-	// public Snakes(ArrayList<Node> tailL) {
-	//
-	// this.tailList = tailL;
-	// tailList.add(node);
-	// }
 
 	// 蛇的节点
 	class Node {
 		// 节点所在行
 		int rows;
 		// 节点所在列
-		int crows;
+		int cols;
 		// 节点方向
 		Dir dir;
+
+		Node next = null;
+		Node pre = null;
 
 		int w = Yards.Bolck_Size;
 		int h = Yards.Bolck_Size;
 
 		public Node(int x, int y, Dir dir) {
 			this.rows = x;
-			this.crows = y;
+			this.cols = y;
 			this.dir = dir;
 		}
 
 		public void draw(Graphics g) {
 			Color c = g.getColor();
 			g.setColor(Color.red);
-			// 画点出现问题
-			g.fillRect(node.rows * w, node.crows * h, Yards.Bolck_Size, Yards.Bolck_Size);
+			g.fillRect(this.rows * w, this.cols * h, Yards.Bolck_Size, Yards.Bolck_Size);
 			g.setColor(c);
 		}
 
@@ -64,120 +63,88 @@ public class Snakes {
 
 	// 尾部增加节点
 	public void addToTail() {
-
-		Node tail = tailList.get(tailList.size() - 1);
-		// int s = tailList.size();
-		// s -= s;
-		System.out.println("size的值-----：" + tailList.size());
-		// Node tail = tailList.get(s);
+		Node node = null;
+		// 右上角是(0,0)
+		// 往右是rows(x)变大
+		// 往下是cols(y)变大
 		switch (tail.dir) {
 		case L:
-			tailList.add(new Node(tail.rows, tail.crows + 1, tail.dir));
+			node = new Node(tail.rows + 1, tail.cols, tail.dir);
 			break;
 		case R:
-			tailList.add(new Node(tail.rows, tail.crows - 1, tail.dir));
+			node = new Node(tail.rows - 1, tail.cols, tail.dir);
 			break;
 		case U:
-			tailList.add(new Node(tail.rows + 1, tail.crows, tail.dir));
+			node = new Node(tail.rows, tail.cols - 1, tail.dir);
 			break;
 		case D:
-			tailList.add(new Node(tail.rows - 1, tail.crows, tail.dir));
+			node = new Node(tail.rows, tail.cols + 1, tail.dir);
 			break;
-
 		}
+		tail.next = node;
+		node.pre = tail;
+		tail = node;
+		// tail.next = null;
+		size++;
 	}
 
-	// 头部增加节点
-	// public void addToHead(Node head) {
-	//
-	// switch (head.dir) {
-	// case L:
-	// headList.add(new Node(head.rows, head.crows - 1, head.dir));
-	// break;
-	// case R:
-	// headList.add(new Node(head.rows, head.crows + 1, head.dir));
-	// break;
-	// case U:
-	// headList.add(new Node(head.rows - 1, head.crows, head.dir));
-	// break;
-	// case D:
-	// headList.add(new Node(head.rows + 1, head.crows, head.dir));
-	// break;
-	//
-	// }
-	// }
+	// 尾部增加节点
+	public void addToHead() {
+		Node node = null;
+		switch (head.dir) {
+
+		case L:
+			node = new Node(head.rows - 1, head.cols, head.dir);
+			break;
+		case R:
+			node = new Node(head.rows + 1, head.cols, head.dir);
+			break;
+		case U:
+			node = new Node(head.rows, head.cols - 1, head.dir);
+			break;
+		case D:
+			node = new Node(head.rows, head.cols + 1, head.dir);
+			break;
+		}
+		head.pre = node;
+		node.next = head;
+		head = node;
+		size++;
+	}
 
 	// 画蛇
 	public void draw(Graphics g) {
-		Iterator<Node> it = tailList.iterator();
-		while (it.hasNext()) {
-			Node node = (Node) it.next();
-			node.draw(g);
-		}
 		move();
-
+		Node n = head;
+		while (n != null) {
+			n.draw(g);
+			n = n.next;
+		}
 	}
 
-	// ****
+	// 移动
 	private void move() {
-
+		addToHead();
+		deleteLast();
 		checkout();
-		// addToTail();
-		// 赋值一个ArrayList
-		ArrayList<Node> tailClone = (ArrayList<Node>) tailList.clone();
-
-		// 头结点改变方向
-		switch (tailList.get(0).dir) {
-		case L:
-			tailList.get(0).rows = tailList.get(0).rows - 1;
-			break;
-		case R:
-			tailList.get(0).rows = tailList.get(0).rows + 1;
-			break;
-		case U:
-			tailList.get(0).crows = tailList.get(0).crows - 1;
-			break;
-		case D:
-			tailList.get(0).crows = tailList.get(0).crows + 1;
-			break;
-		}
-
-		// 之后的节点
-
-		// 计算链表的大小
-		int Size = tailList.size();
-		if (Size == 1) {
-			return;
-		}
-
-		Node nodeS = tailList.get(1);
-		// 保存第2个节点方向
-		nDir = nodeS.dir;
-		// 将头结点方向赋予第二节点
-		nodeS.dir = dir;
-
-		if (Size == 2) {
-			return;
-		}
-
-		Node nodeSS = tailList.get(2);
-		// 将第二节点方向赋予第三节点
-		nodeSS.dir = nDir;
-
-		// 从第四节点开始，通过克隆的节点 将前一节点方向赋给现节点
-		for (int i = 3; i < Size; i++) {
-			tailList.get(3).dir = tailClone.get(i - 1).dir;
-		}
-
 	}
 
-	//
+	// 删除最后一个元素
+	public void deleteLast() {
+
+		Node n = tail;
+		tail = tail.pre;
+		tail.next = null;
+		size++;
+	}
+
+	// 碰撞
 	public void eat(Eggs e) {
 
 		if (this.getRec().intersects(e.getRec())) {
 			System.out.println("碰到了碰到了碰到了碰到了碰到了");
 			e.occur();
-			// addToTail();
+			addToTail();
 			y.setScore(y.getScore() + 5);
 		}
 
@@ -185,19 +152,29 @@ public class Snakes {
 
 	// 碰撞计算
 	public Rectangle getRec() {
-		Node head = tailList.get(0);
 
-		return new Rectangle(head.rows * w, head.crows * h, head.w, head.h);
+		return new Rectangle(head.rows * w, head.cols * h, head.w, head.h);
 	}
 
 	// 判断结束了没
 	public void checkout() {
 		// 判断是否碰触边界
-		if (node.rows < 2 || node.crows < 4 || rows > 48 || node.crows > 47) {
-			y.Stop();
+		if (head.rows < 2 || head.cols < 4 || head.rows > 48 || head.cols > 47) {
+			y.gameOver();
 		}
 		// 判断是否吃到自己
-		// TODO
+		// 4个不可能吃到自己
+		if (size <= 4) {
+			return;
+		}
+		Node n = head.next;
+		while (n != null) {
+			if (n.rows == head.rows && n.cols == head.cols) {
+				y.gameOver();
+			}
+			n = n.next;
+		}
+
 	}
 
 	// 键盘
@@ -205,34 +182,24 @@ public class Snakes {
 		int key = e.getKeyCode();
 		switch (key) {
 		case KeyEvent.VK_LEFT:
-			// 保存头结点之前的方向
-			if (node.dir == Dir.R)
+			if (head.dir == Dir.R)
 				return;
-			dir = node.dir;
-			node.dir = Dir.L;
-			System.out.println("VK_LEFT");
+			head.dir = Dir.L;
 			break;
 		case KeyEvent.VK_RIGHT:
-			if (node.dir == Dir.L)
+			if (head.dir == Dir.L)
 				return;
-			dir = node.dir;
-			node.dir = Dir.R;
-			System.out.println("VK_RIGHT");
-
+			head.dir = Dir.R;
 			break;
 		case KeyEvent.VK_UP:
-			if (node.dir == Dir.D)
+			if (head.dir == Dir.D)
 				return;
-			dir = node.dir;
-			node.dir = Dir.U;
-			System.out.println("VK_UP");
+			head.dir = Dir.U;
 			break;
 		case KeyEvent.VK_DOWN:
-			if (node.dir == Dir.U)
+			if (head.dir == Dir.U)
 				return;
-			dir = node.dir;
-			node.dir = Dir.D;
-			System.out.println("VK_DOWN");
+			head.dir = Dir.D;
 			break;
 		}
 	}

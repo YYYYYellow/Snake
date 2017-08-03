@@ -29,9 +29,6 @@ public class Yards extends Frame {
 	// 判断flag
 	private boolean flag = true;
 
-	// 装蛇的节点容器
-	// static ArrayList<Snakes.Node> tailList = new ArrayList<Snakes.Node>();
-
 	// 行
 	public static int rows = 50;
 	// 列
@@ -45,14 +42,7 @@ public class Yards extends Frame {
 
 	public static void main(String[] args) {
 		// 创建一个yards
-
 		new Yards().lauch();
-		// snakes = new Snakes(tailList);
-
-		// 调用刷新线程
-
-		// Thread thread = new Thread(yards);
-		// thread.start();
 	}
 
 	public void lauch() {
@@ -86,7 +76,7 @@ public class Yards extends Frame {
 		}
 
 		g.setColor(Color.yellow);
-		g.drawString("Score:" + Score, 20 * 10, 20 * 10);
+		g.drawString("Score:" + Score, 23 * 10, 15 * 10);
 		snakes.eat(eggs);
 		eggs.draw(g);
 		snakes.draw(g);
@@ -95,12 +85,12 @@ public class Yards extends Frame {
 			g.setColor(Color.blue);
 			Font font = new Font("华文彩云", Font.BOLD | Font.ITALIC, 40);
 			g.setFont(font);
-			g.drawString("GAME OVER", 13 * 10, 23 * 10);
+			g.drawString("GAME OVER", 13 * 10, 25 * 10);
 		}
 
 	}
 
-	public void Stop() {
+	public void gameOver() {
 		flag = false;
 	}
 
@@ -110,7 +100,6 @@ public class Yards extends Frame {
 		public void run() {
 			while (flag) {
 				repaint();
-				// System.out.println("--------");
 				try {
 					Thread.sleep(100);
 				} catch (InterruptedException e) {
