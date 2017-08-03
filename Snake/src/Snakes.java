@@ -17,20 +17,22 @@ public class Snakes {
 	Dir nDir = null;
 	// 装蛇的节点容器
 
+	private Yards y;
 	static ArrayList<Node> tailList = new ArrayList<Node>();
 	// ArrayList<Node> headList = null;
 	// 初始化第2个节点
 	Node node = new Node(Yards.rows / 2, Yards.cols / 2, Dir.L);
 
-	public Snakes() {
+	public Snakes(Yards y) {
 		tailList.add(node);
+		this.y = y;
 	}
 
-//	public Snakes(ArrayList<Node> tailL) {
-//
-//		this.tailList = tailL;
-//		tailList.add(node);
-//	}
+	// public Snakes(ArrayList<Node> tailL) {
+	//
+	// this.tailList = tailL;
+	// tailList.add(node);
+	// }
 
 	// 蛇的节点
 	class Node {
@@ -53,6 +55,7 @@ public class Snakes {
 		public void draw(Graphics g) {
 			Color c = g.getColor();
 			g.setColor(Color.red);
+			// 画点出现问题
 			g.fillRect(node.rows * w, node.crows * h, Yards.Bolck_Size, Yards.Bolck_Size);
 			g.setColor(c);
 		}
@@ -62,11 +65,11 @@ public class Snakes {
 	// 尾部增加节点
 	public void addToTail() {
 
-		// Node tail = this.tailList.get(tailList.size()-1);
-		int s = tailList.size();
-		s -= s;
-		System.out.println("s的值-----：" + s);
-		Node tail = tailList.get(s);
+		Node tail = tailList.get(tailList.size() - 1);
+		// int s = tailList.size();
+		// s -= s;
+		System.out.println("size的值-----：" + tailList.size());
+		// Node tail = tailList.get(s);
 		switch (tail.dir) {
 		case L:
 			tailList.add(new Node(tail.rows, tail.crows + 1, tail.dir));
@@ -118,7 +121,8 @@ public class Snakes {
 	// ****
 	private void move() {
 
-//		addToTail();
+		checkout();
+		// addToTail();
 		// 赋值一个ArrayList
 		ArrayList<Node> tailClone = (ArrayList<Node>) tailList.clone();
 
@@ -173,7 +177,8 @@ public class Snakes {
 		if (this.getRec().intersects(e.getRec())) {
 			System.out.println("碰到了碰到了碰到了碰到了碰到了");
 			e.occur();
-			addToTail();
+			// addToTail();
+			y.setScore(y.getScore() + 5);
 		}
 
 	}
@@ -185,28 +190,46 @@ public class Snakes {
 		return new Rectangle(head.rows * w, head.crows * h, head.w, head.h);
 	}
 
+	// 判断结束了没
+	public void checkout() {
+		// 判断是否碰触边界
+		if (node.rows < 2 || node.crows < 4 || rows > 48 || node.crows > 47) {
+			y.Stop();
+		}
+		// 判断是否吃到自己
+		// TODO
+	}
+
 	// 键盘
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
 		switch (key) {
 		case KeyEvent.VK_LEFT:
 			// 保存头结点之前的方向
+			if (node.dir == Dir.R)
+				return;
 			dir = node.dir;
 			node.dir = Dir.L;
 			System.out.println("VK_LEFT");
 			break;
 		case KeyEvent.VK_RIGHT:
+			if (node.dir == Dir.L)
+				return;
 			dir = node.dir;
 			node.dir = Dir.R;
 			System.out.println("VK_RIGHT");
 
 			break;
 		case KeyEvent.VK_UP:
+			if (node.dir == Dir.D)
+				return;
 			dir = node.dir;
 			node.dir = Dir.U;
 			System.out.println("VK_UP");
 			break;
 		case KeyEvent.VK_DOWN:
+			if (node.dir == Dir.U)
+				return;
 			dir = node.dir;
 			node.dir = Dir.D;
 			System.out.println("VK_DOWN");

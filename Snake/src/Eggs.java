@@ -1,7 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.util.Iterator;
 import java.util.Random;
 
 public class Eggs {
@@ -11,9 +10,10 @@ public class Eggs {
 	int w = Yards.Bolck_Size;
 	int h = Yards.Bolck_Size;
 	static Random r = new Random();
+	Color color = Color.black;
 
 	public Eggs() {
-		this(r.nextInt(30), r.nextInt(30));
+		this(r.nextInt(10)+5, r.nextInt(10)+5);
 	}
 
 	public Eggs(int rows, int crows) {
@@ -23,8 +23,12 @@ public class Eggs {
 
 	public void draw(Graphics g) {
 		Color c = g.getColor();
-		g.setColor(Color.black);
+		g.setColor(color);
 		g.fillOval(rows * w, cols * h, w, h);
+		if (color == Color.black)
+			color = Color.blue;
+		else
+			color = Color.black;
 		g.setColor(c);
 	}
 
@@ -35,8 +39,10 @@ public class Eggs {
 
 	// 重写设置鸡蛋出现的位置
 	public void occur() {
-		this.setCrows(r.nextInt(30));
-		this.setRows(r.nextInt(30));
+		this.setCrows(r.nextInt(35)+5);
+		this.setRows(r.nextInt(35)+5);
+		System.out.println("rows:" + this.rows);
+		System.out.println("cols:" + this.cols);
 	}
 
 	public int getRows() {
